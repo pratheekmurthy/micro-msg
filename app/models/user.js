@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+const isEmail = require('validator/lib/isEmail')
+const bcrypt = require('bcryptjs')
+
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -10,8 +13,16 @@ const userSchema = new Schema({
     email : {
         type :String,
         required : true,
-        unique : true
-        //custom validation for format checking
+        unique : true,
+        //custom validation for format checking using mongoose
+        validate :{
+            validator : function(value){
+                return isEmail(value)
+            },
+            message : function(){
+                return 'invalid email format'
+            }
+        }
     },
     password : {
         type :String,
@@ -19,6 +30,23 @@ const userSchema = new Schema({
         minlength : 8,
         maxlength :128
     }
+})
+
+userSchema.pre('save',function(next){
+    const user = this
+    console.log(user.password)
+    bcrypt.genSalt()
+        .then((salt)=>{
+            bcrypt.hash(user.password,salt)
+                 .then((encryptedPassword)=>{
+                     user.password = encryptedPassword
+                    next()
+                })
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+ 
 })
 
 const User = mongoose.model('User', userSchema)
