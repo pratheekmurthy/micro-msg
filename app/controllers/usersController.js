@@ -1,6 +1,7 @@
 const { findOne } = require('../models/user')
 const User = require('../models/user')
 const bycrpt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const usersController ={}
 
 usersController.register =(req,res)=>{
@@ -25,7 +26,14 @@ usersController.login =(req,res)=>{
                 .then((result)=>{
                     // res.send(result)
                     if(result){
-                        res.send("email password matches")
+                        //res.send("email password matches")
+                        const tokenData ={
+                            id : user._id
+                        }
+                        const token = jwt.sign(tokenData,'dct@123',{expiresIn : '2d'})
+                        res.json({
+                            token : token
+                        })
                     }else {
                         res.send('password does not match')
                     }
