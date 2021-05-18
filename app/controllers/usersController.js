@@ -51,5 +51,16 @@ usersController.login =(req,res)=>{
 
 }
 
+usersController.account =(req,res)=>{
+    User.findById(req.userId)
+    .then((user)=>{
+        res.json(user)
+    })
+    .catch((err)=>{
+        res.json(err)
+    })
+    
+}
+
 module.exports = usersController
 
