@@ -4,7 +4,9 @@ const usersController = require('../app/controllers/usersController')
 const {authenticateUser} = require('../app/middlewares/authentication')
 const messagesController = require('../app/controllers/messagesController')
 
-
+router.get('/',function(req,res){
+    res.json("hi")
+})
 router.post('/api/users/register',usersController.register)
 router.post('/api/users/login',usersController.login)
 
